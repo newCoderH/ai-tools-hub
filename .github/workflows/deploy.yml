@@ -41,13 +41,21 @@ jobs:
             export PATH="/root/.nvm/versions/node/v24.14.1/bin:$PATH"
             /root/.nvm/versions/node/v24.14.1/bin/pm2 stop ai-tools-hub || true
 
-      # rsync 上传构建产物
-      - name: Upload build artifacts
+      # rsync standalone 目录
+      - name: Upload standalone
         run: |
           echo "${{ secrets.VPS_KEY }}" > ~/vps_key
           chmod 600 ~/vps_key
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "rm -rf ${{ secrets.VPS_PATH }}/.next" && \
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "rm -rf ${{ secrets.VPS_PATH }}/.next/standalone" && \
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/standalone/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/standalone/
+
+      # rsync static 目录
+      - name: Upload static
+        run: |
+          echo "${{ secrets.VPS_KEY }}" > ~/vps_key
+          chmod 600 ~/vps_key
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "rm -rf ${{ secrets.VPS_PATH }}/.next/static" && \
+          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/static/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/static/
 
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
