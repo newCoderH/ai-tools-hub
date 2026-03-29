@@ -41,14 +41,14 @@ jobs:
 
       # rsync 上传构建产物
       - name: Sync build artifacts to VPS
-        uses: Burnett01/rsync-deployments@v6
+        uses: appleboy/ssh-action@v0.1.10
         with:
-          switches: -avz --delete
-          remote_path: ${{ secrets.VPS_PATH }}/.next/
-          local_path: .next/
           host: ${{ secrets.VPS_HOST }}
-          user: ${{ secrets.VPS_USER }}
+          username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
+          port: 22
+          command: |
+            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" .next/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/
 
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
