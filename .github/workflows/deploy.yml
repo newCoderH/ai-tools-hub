@@ -46,7 +46,7 @@ jobs:
         run: |
           echo "${{ secrets.VPS_KEY }}" > ~/vps_key
           chmod 600 ~/vps_key
-          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/
 
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
