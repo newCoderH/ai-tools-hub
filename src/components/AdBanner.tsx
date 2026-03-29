@@ -6,10 +6,10 @@ interface AdBannerProps {
 }
 
 const adSlots = {
-  leaderboard: "R789456123",
-  mediumRectangle: "M123456789",
-  largeRectangle: "L456789012",
-  wideSkyscraper: "S789012345",
+  leaderboard: "8598595844",
+  mediumRectangle: "1546838429",
+  largeRectangle: "1738613370",
+  wideSkyscraper: "8299114888",
 };
 
 const sizeStyles = {
