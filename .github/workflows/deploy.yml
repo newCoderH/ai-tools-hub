@@ -38,13 +38,6 @@ jobs:
             # 停止旧进程
             pm2 stop ai-tools-hub || true
 
-            # 创建部署目录（干净）
-            rm -rf ${{ secrets.VPS_PATH }}/.next
-            mkdir -p ${{ secrets.VPS_PATH }}/.next/static
-
-            # 上传构建产物（在 GitHub Actions 工作流中通过 rsync 完成）
-            echo "Build artifacts ready for upload"
-
       # rsync 上传构建产物
       - name: Sync build artifacts to VPS
         uses: Burnett01/rsync-deployments@v6
@@ -56,7 +49,7 @@ jobs:
           user: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
 
-      - name: Install production dependencies on VPS
+      - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -65,7 +58,6 @@ jobs:
           port: 22
           script: |
             cd ${{ secrets.VPS_PATH }}
-            npm ci --production
             pm2 restart ai-tools-hub || pm2 start .next/standalone/server.js --name "ai-tools-hub"
             pm2 save
 
