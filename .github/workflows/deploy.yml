@@ -34,7 +34,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
-          port: 22
+          port: 2222
           script: |
             # 停止旧进程
             pm2 stop ai-tools-hub || true
@@ -46,9 +46,9 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
-          port: 22
+          port: 2222
           command: |
-            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" .next/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/
+            rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -p 2222" .next/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/
 
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
@@ -56,7 +56,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
-          port: 22
+          port: 2222
           script: |
             cd ${{ secrets.VPS_PATH }}
             pm2 restart ai-tools-hub || pm2 start .next/standalone/server.js --name "ai-tools-hub"
@@ -68,7 +68,7 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_KEY }}
-          port: 22
+          port: 2222
           script: |
             pm2 status
             curl -s http://localhost:3000 | head -c 100
