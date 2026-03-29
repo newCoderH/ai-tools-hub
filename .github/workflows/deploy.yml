@@ -41,7 +41,7 @@ jobs:
 
       # scp 上传构建产物
       - name: Upload build artifacts
-        timeout-minutes: 15
+        timeout-minutes: 5
         run: |
           echo "${{ secrets.VPS_KEY }}" > ~/vps_key
           chmod 600 ~/vps_key
