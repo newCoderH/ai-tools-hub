@@ -41,12 +41,10 @@ jobs:
 
       # scp 上传构建产物
       - name: Upload build artifacts
-        timeout-minutes: 5
         run: |
           echo "${{ secrets.VPS_KEY }}" > ~/vps_key
           chmod 600 ~/vps_key
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "rm -rf ${{ secrets.VPS_PATH }}/.next && mkdir -p ${{ secrets.VPS_PATH }}/.next"
-          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 2222 -i ~/vps_key -r .next ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 2222 -i ~/vps_key -r .next ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/
 
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
