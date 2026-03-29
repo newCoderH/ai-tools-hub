@@ -1,7 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
+// Prisma schema for AI Tools Comparison Website
+// Provider: PostgreSQL (Supabase)
 
 generator client {
   provider = "prisma-client"
@@ -10,4 +8,43 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// tools 表
+model Tool {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String
+  website     String?
+  logoUrl     String?
+  pricing     String?  // "free", "freemium", "paid"
+  pricingNote String?  // 价格说明
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  reviews     Review[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// categories 表
+model Category {
+  id          String  @id @default(cuid())
+  name        String
+  slug        String  @unique
+  description String?
+  icon        String? // emoji 或图标名
+  tools       Tool[]
+}
+
+// reviews 表（预留扩展）
+model Review {
+  id        String   @id @default(cuid())
+  toolId    String
+  tool      Tool     @relation(fields: [toolId], references: [id])
+  rating    Int
+  content   String?
+  author    String?
+  createdAt DateTime @default(now())
 }
