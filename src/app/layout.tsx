@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -19,6 +20,13 @@ export default function RootLayout({
       lang="zh-CN"
       className="h-full antialiased"
     >
+      <head>
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2278422245377911"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
+      </head>
       <body className="flex min-h-screen flex-col">
         <Header />
         {children}
