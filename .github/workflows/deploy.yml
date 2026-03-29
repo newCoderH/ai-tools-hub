@@ -36,8 +36,7 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           port: 2222
           script: |
-            source ~/.bashrc
-            pm2 stop ai-tools-hub || true
+            /root/.nvm/versions/node/v24.14.1/bin/pm2 stop ai-tools-hub || true
 
       # rsync 上传构建产物
       - name: Sync build artifacts to VPS
@@ -58,10 +57,9 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           port: 2222
           script: |
-            source ~/.bashrc
             cd ${{ secrets.VPS_PATH }}
-            pm2 restart ai-tools-hub || pm2 start .next/standalone/server.js --name "ai-tools-hub"
-            pm2 save
+            /root/.nvm/versions/node/v24.14.1/bin/pm2 restart ai-tools-hub || /root/.nvm/versions/node/v24.14.1/bin/pm2 start .next/standalone/server.js --name "ai-tools-hub"
+            /root/.nvm/versions/node/v24.14.1/bin/pm2 save
 
       - name: Verify deployment
         uses: appleboy/ssh-action@v0.1.10
@@ -71,6 +69,5 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           port: 2222
           script: |
-            source ~/.bashrc
-            pm2 status
+            /root/.nvm/versions/node/v24.14.1/bin/pm2 status
             curl -s http://localhost:3000 | head -c 100
