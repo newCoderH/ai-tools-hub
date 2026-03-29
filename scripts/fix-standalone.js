@@ -1,16 +1,17 @@
 /**
- * Fix standalone server.js path resolution issue
+ * Fix standalone server.js working directory issue
  *
- * Problem: The generated server.js uses `dir = path.join(__dirname)`
- * which points to the standalone/ directory. But .next/static/ is at
- * the project root. This script changes it to point to the parent
- * directory so that distDir: "./.next" resolves correctly.
+ * Problem: The generated server.js uses `process.chdir(__dirname)`
+ * which sets the working directory to standalone/ directory.
+ * We change it to `process.chdir(dir)` to ensure CWD is consistent.
+ *
+ * Note: Static files are in project_root/.next/static/ but Next.js looks
+ * in standalone/.next/static/. The CI workflow creates a symlink to fix this.
  */
 
 const fs = require("fs");
 const path = require("path");
 
-// Get the project root (two levels up from scripts/ directory)
 const projectRoot = path.join(__dirname, '..');
 const standaloneDir = path.join(projectRoot, ".next", "standalone");
 const serverPath = path.join(standaloneDir, "server.js");
@@ -18,22 +19,16 @@ const serverPath = path.join(standaloneDir, "server.js");
 if (fs.existsSync(serverPath)) {
   let content = fs.readFileSync(serverPath, "utf-8");
 
-  // Fix 1: Change dir to point to project root instead of standalone/ directory
-  // __dirname is .../.next/standalone/, so two levels up gives the project root
-  const oldLine = "const dir = path.join(__dirname)";
-  const newLine = "const dir = path.join(__dirname, '..', '..')";
-
-  // Fix 2: Change chdir(__dirname) to chdir(dir) to use project root as CWD
-  content = content.replace(
-    "process.chdir(__dirname)",
-    "process.chdir(dir)"
-  );
-
-  if (content.includes(oldLine)) {
-    content = content.replace(oldLine, newLine);
+  // Fix: Change chdir(__dirname) to chdir(dir)
+  // This ensures the working directory matches 'dir' for consistent path resolution
+  if (content.includes("process.chdir(__dirname)")) {
+    content = content.replace(
+      "process.chdir(__dirname)",
+      "process.chdir(dir)"
+    );
     fs.writeFileSync(serverPath, content);
-    console.log("Fixed standalone server.js: dir now points to project root");
-  } else if (content.includes(newLine)) {
+    console.log("Fixed standalone server.js: chdir now uses dir");
+  } else if (content.includes("process.chdir(dir)")) {
     console.log("standalone server.js already fixed");
   } else {
     console.error("Could not find expected pattern in server.js");

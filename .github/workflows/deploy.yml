@@ -57,6 +57,17 @@ jobs:
           chmod 600 ~/vps_key
           rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/static/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/static/
 
+      - name: Create static symlink
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          port: 2222
+          script: |
+            cd ${{ secrets.VPS_PATH }}/.next/standalone/.next
+            ln -nfs ../../static static
+
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
         with:
