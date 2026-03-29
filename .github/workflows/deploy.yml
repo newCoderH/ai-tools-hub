@@ -44,7 +44,7 @@ jobs:
         run: |
           echo "${{ secrets.VPS_KEY }}" > ~/vps_key
           chmod 600 ~/vps_key
-          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 2222 -r .next/* ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/
+          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 2222 -i ~/vps_key -r .next ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next
 
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
