@@ -109,17 +109,11 @@ export default async function CategoryPage({ params }: PageProps) {
             )}
 
             {/* Bottom Ad */}
-            <div className="mt-8 flex justify-center">
-              <AdBanner size="mediumRectangle" />
-            </div>
+            <AdBanner size="mediumRectangle" />
           </div>
 
           {/* Sidebar Ad - WideSkyscraper (sticky) */}
-          <aside className="hidden lg:block">
-            <div className="sticky top-24">
-              <AdBanner size="wideSkyscraper" />
-            </div>
-          </aside>
+          <AdBanner size="wideSkyscraper" className="sticky top-24" />
         </div>
       </div>
     </main>

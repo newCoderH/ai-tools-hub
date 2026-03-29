@@ -35,7 +35,7 @@ export default function HomePage() {
   return (
     <main className="flex-1">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 to-white py-20 dark:from-zinc-900 dark:to-zinc-950">
+      <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 to-white py-12 dark:from-zinc-900 dark:to-zinc-950">
         <div className="absolute inset-0 opacity-30 dark:opacity-10">
           <div className="absolute top-10 left-10 size-64 rounded-full bg-indigo-400 blur-3xl" />
           <div className="absolute bottom-10 right-10 size-64 rounded-full bg-purple-400 blur-3xl" />
@@ -113,9 +113,7 @@ export default function HomePage() {
       </section>
 
       {/* Ad Banner */}
-      <div className="flex justify-center py-6">
-        <AdBanner size="leaderboard" />
-      </div>
+      <AdBanner size="leaderboard" />
 
       {/* Category Cards */}
       <section className="container mx-auto px-4 py-12">
@@ -177,9 +175,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="mt-6 flex justify-center">
-          <AdBanner size="mediumRectangle" />
-        </div>
+        <AdBanner size="mediumRectangle" />
       </section>
 
       {/* Latest Tools - Grid */}
@@ -197,9 +193,7 @@ export default function HomePage() {
             <ToolCard key={tool.slug} {...tool} />
           ))}
         </div>
-        <div className="mt-6 flex justify-center">
-          <AdBanner size="mediumRectangle" />
-        </div>
+        <AdBanner size="mediumRectangle" />
       </section>
     </main>
   );

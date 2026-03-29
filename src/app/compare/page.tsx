@@ -131,9 +131,7 @@ export default function ComparePage() {
         </div>
 
         {/* Top Ad */}
-        <div className="mb-8 flex justify-center">
-          <AdBanner size="leaderboard" />
-        </div>
+        <AdBanner size="leaderboard" />
 
         {/* Tool Selectors */}
         <div className="mb-8 grid gap-4 sm:grid-cols-2">
@@ -305,9 +303,7 @@ export default function ComparePage() {
         )}
 
         {/* Bottom Ad */}
-        <div className="mt-8 flex justify-center">
-          <AdBanner size="mediumRectangle" />
-        </div>
+        <AdBanner size="mediumRectangle" />
       </div>
     </main>
   );

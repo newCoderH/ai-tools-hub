@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 
 interface AdBannerProps {
@@ -20,8 +23,37 @@ const sizeStyles = {
 };
 
 export default function AdBanner({ size, className = "" }: AdBannerProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [adLoaded, setAdLoaded] = useState(false);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const observer = new MutationObserver(() => {
+      const ins = container.querySelector("ins");
+      const hasIframe = ins && ins.querySelector("iframe");
+      if (hasIframe) {
+        setAdLoaded(true);
+        observer.disconnect();
+      }
+    });
+
+    observer.observe(container, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, []);
+
+  // 广告未加载时完全隐藏，不占任何空间
+  if (!adLoaded) {
+    return null;
+  }
+
   return (
-    <div className={`mx-auto ${className}`}>
+    <div
+      ref={containerRef}
+      className={`mx-auto flex justify-center py-6 overflow-hidden ${className}`}
+    >
       <ins
         className="adsbygoogle"
         style={sizeStyles[size]}
