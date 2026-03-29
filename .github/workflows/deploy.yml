@@ -39,12 +39,12 @@ jobs:
             export PATH="/root/.nvm/versions/node/v24.14.1/bin:$PATH"
             /root/.nvm/versions/node/v24.14.1/bin/pm2 stop ai-tools-hub || true
 
-      # scp 上传构建产物
+      # rsync 上传构建产物
       - name: Upload build artifacts
         run: |
           echo "${{ secrets.VPS_KEY }}" > ~/vps_key
           chmod 600 ~/vps_key
-          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P 2222 -i ~/vps_key -r .next ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/
 
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
