@@ -48,14 +48,14 @@ jobs:
         run: |
           echo "${{ secrets.VPS_KEY }}" > ~/vps_key
           chmod 600 ~/vps_key
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/standalone/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/standalone/
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/standalone/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/standalone/
 
       # rsync static 目录
       - name: Upload static
         run: |
           echo "${{ secrets.VPS_KEY }}" > ~/vps_key
           chmod 600 ~/vps_key
-          rsync -avz -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/static/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/static/
+          rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 2222 -i ~/vps_key" .next/static/ ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ secrets.VPS_PATH }}/.next/static/
 
       - name: Start PM2
         uses: appleboy/ssh-action@v0.1.10
@@ -81,3 +81,4 @@ jobs:
             export PATH="/root/.nvm/versions/node/v24.14.1/bin:$PATH"
             /root/.nvm/versions/node/v24.14.1/bin/pm2 status
             curl -s http://localhost:3000 | head -c 100
+            curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/_next/static/chunks/0t0-a9j76efq8.css
