@@ -35,9 +35,47 @@ jobs:
           key: ${{ secrets.VPS_KEY }}
           port: 22
           script: |
+            # 停止旧进程
+            pm2 stop ai-tools-hub || true
+
+            # 创建部署目录（干净）
+            rm -rf ${{ secrets.VPS_PATH }}/.next
+            mkdir -p ${{ secrets.VPS_PATH }}/.next/static
+
+            # 上传构建产物（在 GitHub Actions 工作流中通过 rsync 完成）
+            echo "Build artifacts ready for upload"
+
+      # rsync 上传构建产物
+      - name: Sync build artifacts to VPS
+        uses: Burnett01/rsync-deployments@v6
+        with:
+          switches: -avz --delete
+          remote_path: ${{ secrets.VPS_PATH }}/.next/
+          local_path: .next/
+          host: ${{ secrets.VPS_HOST }}
+          user: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+
+      - name: Install production dependencies on VPS
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          port: 22
+          script: |
             cd ${{ secrets.VPS_PATH }}
-            git pull origin main
             npm ci --production
-            npm run build
-            pm2 restart ai-tools-hub || pm2 start npm --name "ai-tools-hub" -- start
+            pm2 restart ai-tools-hub || pm2 start .next/standalone/server.js --name "ai-tools-hub"
             pm2 save
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          port: 22
+          script: |
+            pm2 status
+            curl -s http://localhost:3000 | head -c 100
